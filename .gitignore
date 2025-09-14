@@ -2,3 +2,10 @@ teste_rpd.py
 gemini.md
 .streamlit/secrets.toml
 __pycache__/
+Terraform_OCI/
+sql_inserts_v2/
+htmlcov/
+exportacoes/
+tests/
+backup.sql
+.env

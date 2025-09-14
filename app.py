@@ -6,6 +6,7 @@ from gspread_dataframe import set_with_dataframe, get_as_dataframe
 from auth import autenticar_usuario, adicionar_usuario
 from estoque import ler_estoque_sheets, adicionar_item_estoque, registrar_venda_sheets, atualizar_estoque_sheets
 from sheets import autenticar_gspread, salvar_resposta_sheets, ler_respostas_sheets
+from desenvolvimento_pessoal import cursos
 
 # Nome da planilha e aba
 SHEET_NAME = "RPD"
@@ -85,7 +86,7 @@ if st.session_state.get("usuario_logado") in ['cid', 'Cid', 'Cleo', 'cleo', 'qui
         opcoes_menu.append("Relatório de Vendas")
 
     if cid:
-        opcoes_menu.extend(["AMV Tracker", "Protocolo Diário (POD)"])
+        opcoes_menu.extend(["AMV Tracker", "Protocolo Diário (POD)", "Painel de Cursos"])
 
     if familia:
         opcoes_menu.append("Estoque")
@@ -171,10 +172,10 @@ if opcao == "Estoque":
                 idx = df_estoque[(df_estoque['Item'] == item_selecionado) & (df_estoque['Variação'] == variacao_selecionada)].index[0] # type: ignore
                 
                 # A COMPARAÇÃO AGORA FUNCIONA PERFEITAMENTE!
-                if df_estoque.loc[idx, 'Quantidade'] >= quantidade_vendida:
+                if df_estoque.loc[idx, 'Quantidade'] >= quantidade_vendida: # type: ignore
                     preco_unitario = df_estoque.loc[idx, 'Preço']
-                    preco_total = quantidade_vendida * preco_unitario
-                    df_estoque.loc[idx, 'Quantidade'] -= quantidade_vendida # O cálculo também é seguro
+                    preco_total = quantidade_vendida * preco_unitario #  type: ignore
+                    df_estoque.loc[idx, 'Quantidade'] -= quantidade_vendida # type: ignore
                     atualizar_estoque_sheets(df_estoque)
                     datahora = datetime.now(pytz.timezone('America/Sao_Paulo')).strftime("%d/%m/%Y  %H:%M:%S")
                     registrar_venda_sheets(datahora, item_selecionado, variacao_selecionada, quantidade_vendida, preco_unitario, preco_total, st.session_state.nome_usuario)
@@ -314,3 +315,6 @@ elif opcao == "AMV Tracker":
 
 elif opcao == "Protocolo Diário (POD)":
     protocolo_diario.exibir_protocolo_diario()
+
+elif opcao == "Painel de Cursos":
+    cursos.exibir_painel_cursos()
